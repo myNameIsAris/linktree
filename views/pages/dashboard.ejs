@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="dashboard.css">
+    <script src="https://kit.fontawesome.com/524dd30d0c.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.js"></script>
+  </head>
+  <title>Dashboard | Artree</title>
+  <body>
+
+    <div class="sidenav">
+      <h1>Artree</h1>
+      <a href="#">Dashboard</a>
+      <a href="#">Link</a>
+      <a href="#">Profile</a>
+    </div>
+    
+    <div class="container">
+
+      <div class="welcome">
+        <h1>Selamat Datang Aris</h1>
+        <span>Buat Postmu Sekarang</span>
+      </div>
+
+      <div class="container-stats">
+        <h1>Jumlah Pengunjung Linkmu</h1>
+        <canvas id="stats-visit"></canvas>
+      </div>
+
+      <div class="card-container">
+        <div class="card">
+          <div class="card-top">
+            <i class="fa-solid fa-newspaper"></i>
+            <span>JUMLAH POST</span>
+          </div>
+          <h1>3</h1>
+        </div>
+        <div class="card">
+          <div class="card-top">
+            <i class="fa-solid fa-link"></i>
+            <span>JUMLAH LINK</span>
+          </div>
+          <h1>3</h1>
+        </div>
+        <div class="card">
+          <div class="card-top">
+            <i class="fa-solid fa-users"></i>
+            <span>JUMLAH PENGUNJUNG</span>
+          </div>
+          <h1>3</h1>
+        </div>
+      </div>
+
+      <div class="footer">
+        <span style="font-size: larger; font-weight: bolder;">Copyright By Aris</span>
+        <span>Sejak Tahun 2023</span>
+      </div>
+    </div>
+
+  </body>
+
+  <script>
+    const labels = []
+    const datasets = []
+    for (let i = 1; i <= 30; i++) {
+      labels.push(i)
+    }
+    for (let i = 1; i <= 30; i++) {
+      datasets.push(generateRandomNumber(0, 100))
+    }
+    const data = {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Pengunjung',
+          data: datasets,
+          fill: true,
+          backgroundColor: 'rgba(255, 255, 255, 0.1)',
+          borderColor: '#fffeff',
+          tension: .2
+        },
+      ]
+    }
+    const plugin = {
+      id: 'customCanvasBackgroundColor',
+      beforeDraw: (chart, args, options) => {
+        const {ctx} = chart;
+        ctx.save();
+        ctx.globalCompositeOperation = 'destination-over';
+        ctx.fillStyle = options.color || '#99ffff';
+        ctx.fillRect(0, 0, chart.width, chart.height);
+        ctx.restore();
+      }
+    };
+    const config = {
+      type: 'line',
+      data: data,
+      options : {
+        scales: {
+          y: {
+            min: 0,
+            title : {
+              text : 'Pengunjung Tiap Hari',
+              display : true
+            }
+          },
+          x : {
+            title : {
+              text : 'Tanggal di Bulan 12',
+              display : true
+            }
+          }
+        },
+        plugins: {
+          customCanvasBackgroundColor: {
+            color: '#212121',
+          }
+        }
+      },
+      // plugins: [plugin],
+    }
+
+    const chart = new Chart(document.querySelector('#stats-visit'), config)
+
+    function generateRandomNumber(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+  </script>
+</html>

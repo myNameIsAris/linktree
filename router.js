@@ -2,16 +2,10 @@ const express = require('express')
 
 const router = new express.Router()
 
-router.get('/', (req, res) => {
-    return res.render('../views/pages/index', {
-        name : 'Aris'
-    })
-})
+const homeController = require('./controller/home-controller')
 
-router.get('/login', (req, res) => {
-    return res.render('../views/pages/login', {
-        name : 'Aris'
-    })
-})
+router.get('/', homeController.home)
+router.get('/login', homeController.login)
+router.get('/register', homeController.register)
 
 module.exports = router
