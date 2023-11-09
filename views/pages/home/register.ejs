@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style/logreg.css">
+    <link rel="stylesheet" href="style/components.css">
     <script src="https://kit.fontawesome.com/524dd30d0c.js" crossorigin="anonymous"></script>
     <title>Register | Artree</title>
   </head>
@@ -20,13 +21,17 @@
       
       <div class="login-section">
         <h1>Artree | Register</h1>
-
-        <form action="">
-          <input type="email" placeholder="Email">
-          <input type="text" placeholder="Full Name">
-          <input type="text" placeholder="Username">
-          <input type="password" placeholder="Password">
-          <button>Register</button>
+        <% if (success) { %>
+          <%- include('../../components/alert.ejs', {type : 'success', msg : success}) %>
+          <% } else if (error) { %>
+            <%- include('../../components/alert.ejs', {type : 'error', msg : error}) %>
+        <% } %>
+        <form method="post" action="/api/register">
+          <input name="email" type="email" placeholder="Email" value="<%= prevData?.email %>">
+          <input name="fullname" type="text" placeholder="Full Name" value="<%= prevData?.fullname %>">
+          <input name="username" type="text" placeholder="Username" value="<%= prevData?.username %>">
+          <input name="password" type="password" placeholder="Password">
+          <button type="submit">Register</button>
         </form>
       </div>
     </div>
