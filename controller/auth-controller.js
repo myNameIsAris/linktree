@@ -14,12 +14,13 @@ const emailService = require('../services/email-service')
 
 const register = async (req, res) => {
 	// Validate Request
-	const [data, error] = validate(authValidate.login, req.body)
+	const [data, error] = validate(userValidate.createUser, req.body)
 
 	if (error) {
 		req.flash('error', 'Terdapat Kesalahan Pada Input Anda')
 		req.flash('prevData', data)
-		return res.redirect('/login')
+		console.log(error)
+		return res.redirect('/register')
 	}
 
 	// Check Username
@@ -59,6 +60,7 @@ const login = async (req, res) => {
 	if (error) {
 		req.flash('error', 'Terdapat Kesalahan Pada Input Anda')
 		req.flash('prevData', data)
+		console.log(error)
 		return res.redirect('/login')
 	}
 
