@@ -9,6 +9,9 @@ const userValidate = require('../validator/users-validation')
 const authValidate = require('../validator/auth-validation')
 const { validate } = require('../validator/validation')
 
+// Import Service
+const emailService = require('../services/email-service')
+
 const register = async (req, res) => {
 	// Validate Request
 	const [data, error] = validate(authValidate.login, req.body)
@@ -99,8 +102,16 @@ const logout = async (req, res) => {
 	return res.redirect('/login')
 }
 
+const sendEmailAllUser = async (req, res) => {
+	await emailService.sendEmailAllUser()
+	return res.send({
+		status: 'Berhasil',
+	})
+}
+
 module.exports = {
 	register,
 	login,
 	logout,
+	sendEmailAllUser,
 }
