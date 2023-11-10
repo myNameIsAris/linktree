@@ -21,10 +21,11 @@ const sendEmailAllUser = async () => {
 		text: 'Jumlah User Saat Ini Adalah ' + allUser.length,
 	}
 
-	transporter.sendMail(options, function (err, info) {
-		if (err) console.log(err)
-		else console.log(info)
-	})
+	try {
+		await transporter.sendMail(options)
+	} catch (err) {
+		console.log(err)
+	}
 }
 
 module.exports = {
