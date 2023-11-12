@@ -118,12 +118,14 @@ const login = async (req, res) => {
 }
 
 const logout = async (req, res) => {
-	// Find User
-	const user = await User.findById(req.user.id)
-
-	// Remove Token and Cookies
-	user.token = null
-	await user.save()
+	await prisma.users.update({
+		where: {
+			id: req.user.id,
+		},
+		data: {
+			token: null,
+		},
+	})
 	res.clearCookie('token')
 
 	return res.redirect('/login')
