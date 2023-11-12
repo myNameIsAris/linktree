@@ -9,7 +9,7 @@ const cookieParser = require('cookie-parser')
 const { port } = require('./utils/variabel')
 
 // DB
-require('./utils/db')
+// require('./utils/db')
 
 // Router
 const webRouter = require('./routers/router')

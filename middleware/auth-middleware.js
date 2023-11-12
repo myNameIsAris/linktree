@@ -1,4 +1,5 @@
 const User = require('../model/users-model')
+const prisma = require('../utils/database')
 
 const authenticate = async (req, res, next) => {
 	// Get Cookie
@@ -10,8 +11,13 @@ const authenticate = async (req, res, next) => {
 	}
 
 	// Find Token
-	const user = await User.findOne({
-		token,
+	// const user = await User.findOne({
+	// 	token,
+	// })
+	const user = await prisma.users.findFirst({
+		where: {
+			token,
+		},
 	})
 	if (!user) {
 		req.flash('error', 'Token Yang Digunakan Tidak Valid')

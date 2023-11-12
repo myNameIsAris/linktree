@@ -17,5 +17,6 @@ router.get('/register', homeController.register)
 router.use(authMiddleware.authenticate)
 router.get('/logout', authController.logout)
 router.get('/dashboard', dashboardController.dashboard)
+router.get('/link', dashboardController.link)
 
 module.exports = router

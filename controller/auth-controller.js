@@ -3,6 +3,7 @@ const { v4: uuid } = require('uuid')
 
 // Import Model
 const User = require('../model/users-model')
+const prisma = require('../utils/database')
 
 // Import Validator
 const userValidate = require('../validator/users-validation')
@@ -24,8 +25,13 @@ const register = async (req, res) => {
 	}
 
 	// Check Username
-	const usernameFound = await User.findOne({
-		username: data.username,
+	// const usernameFound = await User.findOne({
+	// 	username: data.username,
+	// })
+	const usernameFound = await prisma.users.findFirst({
+		where: {
+			username: data.username,
+		},
 	})
 	if (usernameFound) {
 		req.flash('error', 'Username Telah Digunakan')
@@ -34,8 +40,13 @@ const register = async (req, res) => {
 	}
 
 	// Check Email
-	const emailFound = await User.findOne({
-		email: data.email,
+	// const emailFound = await User.findOne({
+	// 	email: data.email,
+	// })
+	const emailFound = await prisma.users.findFirst({
+		where: {
+			email: data.email,
+		},
 	})
 	if (emailFound) {
 		req.flash('prevData', data)
@@ -46,7 +57,8 @@ const register = async (req, res) => {
 	// Create User
 	data.role = 3
 	data.password = bcrypt.hashSync(data.password, 3)
-	await User.create(data)
+	// await User.create(data)
+	await prisma.users.create({ data })
 
 	// Set Session
 	req.flash('success', 'Berhasil Menambah User')
@@ -65,8 +77,13 @@ const login = async (req, res) => {
 	}
 
 	// Check Username
-	const user = await User.findOne({
-		username: data.username,
+	// const user = await User.findOne({
+	// 	username: data.username,
+	// })
+	const user = await prisma.users.findFirst({
+		where: {
+			username: data.username,
+		},
 	})
 	if (!user) {
 		req.flash('error', 'User dengan Username Tersebut Tidak Ditemukan')
@@ -83,8 +100,16 @@ const login = async (req, res) => {
 
 	// Generate Token
 	const token = uuid().toString()
-	user.token = token
-	await user.save()
+	// user.token = token
+	// await user.save()
+	await prisma.users.update({
+		where: {
+			id: user.id,
+		},
+		data: {
+			token,
+		},
+	})
 
 	// Set Cookie
 	res.cookie('token', token)

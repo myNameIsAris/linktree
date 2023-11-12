@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style/dashboard.css">
+    <script src="https://kit.fontawesome.com/524dd30d0c.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.js"></script>
+  </head>
+  <title>Link | Artree</title>
+  <body>
+
+    <div class="sidenav">
+      <h1>Artree</h1>
+      <a href="/dashboard">Dashboard</a>
+      <a href="/link">Link</a>
+      <a href="/profile">Profile</a>
+      <a href="/logout">Logout</a>
+    </div>
+    
+    <div class="container">
+
+      <div class="welcome">
+        <h1>Selamat Datang Aris</h1>
+        <span>Buat Postmu Sekarang</span>
+      </div>
+
+      <div class="container-link">
+        <div class="link-title">
+          <h1>Buat Link Mu Sekarang</h1>
+          <button id="add-post"><i class="fa-solid fa-plus"></i>  Tambah Post</button>
+        </div>
+
+        <div class="con-link">
+          <div class="link">
+            <span>Ini Judulnya Nanti</span>
+            <div class="link-custom">
+              <button class="edit"><i class="fa-solid fa-pen-to-square"></i></button>
+              <button class="remove"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="footer">
+        <span style="font-size: larger; font-weight: bolder;">Copyright By Aris</span>
+        <span>Sejak Tahun 2023</span>
+      </div>
+    </div>
+
+    <!-- The Modal -->
+    <div id="modal" class="modal">
+
+      <!-- Modal content -->
+      <div class="modal-content">
+        <div class="modal-header">
+          <span class="close">&times;</span>
+          <h2>Buat Postmu</h2>
+        </div>
+        <div class="modal-body">
+          <input id="title-post" type="text" placeholder="Nama Postmu">
+          <div class="link-add">
+            <h3>Buat Linkmu</h3>
+            <button id="add-link"><i class="fa-solid fa-plus"></i> Tambah Link</button>
+          </div>
+          <div class="con-post-link">
+            <div class="post-link">
+              <input type="text" placeholder="Title" class="title-link">
+              <input type="text" placeholder="Link" class="link-link">
+              <button class="remove-link"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          </div>
+          <button id="save"> <i class="fa-solid fa-floppy-disk"></i> Save</button>
+        </div>
+        <div class="modal-footer">
+          <h3>Buat dan Bagikan Link Anda Seluas Luasnya</h3>
+        </div>
+      </div>
+
+    </div>
+
+  </body>
+
+  <script>
+    // MODAL COMPONENT
+    const modal = document.querySelector('#modal')
+    const closeModal = document.querySelector('.close')
+    const addLink = document.querySelector('#add-link')
+    const postLinkContainer = document.querySelector('.con-post-link')
+    const removeLink = document.querySelector('.remove-link')
+    const save = document.querySelector('#save')
+
+    // LINK MODAL
+    const addPost = document.querySelector('#add-post')
+
+    // MODAL LISTENER
+    closeModal.addEventListener('click', function(e) {
+      modal.style.display = 'none'
+    })
+    
+    window.addEventListener('click', function(e) {
+      if (e.target === modal) {
+        modal.style.display = 'none'
+      }
+    })
+
+    addPost.addEventListener('click', function(e) {
+      modal.style.display = 'block'
+    })
+
+    removeLink.addEventListener('click', function(e) {
+      if (document.querySelectorAll('.remove-link').length > 1) {
+        const parent = removeLink.parentElement
+        parent.remove()
+      }
+    })
+
+    // ADD LINK
+    addLink.addEventListener('click', function(e) {
+      const div = document.createElement('div')
+      const button = document.createElement('button')
+      const i = document.createElement('i')
+      const inputTitle = document.createElement('input')
+      const inputLink = document.createElement('input')
+      div.classList.add('post-link')
+      button.classList.add('remove-link')
+      i.classList.add('fa-solid', 'fa-trash')
+      inputTitle.type = 'text'
+      inputLink.type = 'text'
+      inputTitle.placeholder = 'Title'
+      inputLink.placeholder = 'Link'
+      inputTitle.classList.add('title-link')
+      inputLink.classList.add('link-link')
+      button.appendChild(i)
+      div.appendChild(inputTitle)
+      div.appendChild(inputLink)
+      div.appendChild(button)
+      postLinkContainer.appendChild(div)
+      button.addEventListener('click', function(e) {
+        if (document.querySelectorAll('.remove-link').length > 1) {
+          div.remove()
+        }
+      })
+    })
+
+    // SAVE LINK
+    save.addEventListener('click', async function(e) {
+      const title = document.querySelector('#title-post').value
+      const links = []
+      const allTitle = document.querySelectorAll('.title-link')
+      const allLinks = document.querySelectorAll('.link-link')
+      console.log({allTitle})
+      for (let i = 0; i < allLinks.length; i++) {
+        const data = {
+          title : allTitle[i].value,
+          link : allLinks[i].value,
+        }
+        links.push(data)
+      }
+      const payload = {
+        title,
+        links
+      }
+      const result = await fetchJSON('/post-link', {
+        method : 'POST',
+        body : JSON.stringify(payload)
+      })
+
+      console.log(result)
+    })
+
+    async function fetchJSON(url, options = {}) {
+      const BASEURL = (window.location.protocol === 'http:') ? 'http://localhost:3000/api' : 'https://bewildered-foal-overshirt.cyclic.app/'
+        options.headers = {
+            'Content-Type': 'application/json',
+        }
+        try {
+            const response = await fetch(BASEURL + url, options)
+            if (!response.ok) {
+                const data = await response.json()
+                return alert(data.msg)
+            }
+            const data = await response.json()
+            return data
+        } catch (error) {
+            console.log(error)
+        }
+    }
+  </script>
+</html>

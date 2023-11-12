@@ -1,5 +1,7 @@
 const Mongoose = require('mongoose')
 
+const Posts = require('./posts-model')
+
 const schema = new Mongoose.Schema({
 	username: {
 		type: String,
@@ -26,6 +28,12 @@ const schema = new Mongoose.Schema({
 		type: String,
 		required: false,
 	},
+	posts: [
+		{
+			type: Mongoose.Types.ObjectId,
+			ref: 'posts',
+		},
+	],
 })
 
 const users = Mongoose.model('users', schema)
