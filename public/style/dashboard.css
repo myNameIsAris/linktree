@@ -234,12 +234,23 @@ body:has(.sidenav) .container {
 	color: white;
 }
 
+.link a {
+	padding: 8.5px;
+	border-radius: 10px;
+	margin: 0 2px;
+	color: white;
+}
+
 .remove {
 	background-color: var(--fourth-color);
 }
 
 .edit {
 	background-color: var(--third-color);
+}
+
+.open {
+	background-color: var(--fift-color);
 }
 /* MODAL */
 

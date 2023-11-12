@@ -28,10 +28,12 @@ model Users {
 model Posts {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   title String
+  url String
   created_at DateTime @default(now())
   update_at DateTime @updatedAt
   is_deleted Boolean @default(false)
   links Links[]
+  activity Posts_activity[]
 
   user Users @relation(fields: [id_user], references: [id])
   id_user String @db.ObjectId
@@ -44,7 +46,24 @@ model Links {
   created_at DateTime @default(now())
   update_at DateTime @updatedAt
   is_deleted Boolean @default(false)
+  activity Links_activity[]
 
   post Posts @relation(fields: [id_post], references: [id])
   id_post String @db.ObjectId
+}
+
+model Posts_activity {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  created_at DateTime @default(now())
+  
+  post Posts @relation(fields: [id_post], references: [id])
+  id_post String @db.ObjectId
+}
+
+model Links_activity {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  created_at DateTime @default(now())
+  
+  link Links @relation(fields: [id_link], references: [id])
+  id_link String @db.ObjectId
 }

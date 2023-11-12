@@ -1,8 +1,7 @@
 const bcrypt = require('bcryptjs')
 const { v4: uuid } = require('uuid')
 
-// Import Model
-const User = require('../model/users-model')
+// Import DB
 const prisma = require('../utils/database')
 
 // Import Validator
@@ -25,9 +24,6 @@ const register = async (req, res) => {
 	}
 
 	// Check Username
-	// const usernameFound = await User.findOne({
-	// 	username: data.username,
-	// })
 	const usernameFound = await prisma.users.findFirst({
 		where: {
 			username: data.username,
@@ -40,9 +36,6 @@ const register = async (req, res) => {
 	}
 
 	// Check Email
-	// const emailFound = await User.findOne({
-	// 	email: data.email,
-	// })
 	const emailFound = await prisma.users.findFirst({
 		where: {
 			email: data.email,
@@ -57,7 +50,6 @@ const register = async (req, res) => {
 	// Create User
 	data.role = 3
 	data.password = bcrypt.hashSync(data.password, 3)
-	// await User.create(data)
 	await prisma.users.create({ data })
 
 	// Set Session
@@ -76,10 +68,6 @@ const login = async (req, res) => {
 		return res.redirect('/login')
 	}
 
-	// Check Username
-	// const user = await User.findOne({
-	// 	username: data.username,
-	// })
 	const user = await prisma.users.findFirst({
 		where: {
 			username: data.username,
@@ -100,8 +88,6 @@ const login = async (req, res) => {
 
 	// Generate Token
 	const token = uuid().toString()
-	// user.token = token
-	// await user.save()
 	await prisma.users.update({
 		where: {
 			id: user.id,
