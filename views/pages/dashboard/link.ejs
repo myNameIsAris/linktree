@@ -35,13 +35,6 @@
           <% for( const post of posts ) { %>
             <%- include('../../components/link.ejs', {post})  %>
           <% } %>
-          <!-- <<div class="link">
-            <span>Ini Judulnya Nanti</span>
-            <div class="link-custom">
-              <button class="edit"><i class="fa-solid fa-pen-to-square"></i></button>
-              <button class="remove"><i class="fa-solid fa-trash"></i></button>
-            </div>
-          </div>> -->
         </div>
 
       </div>
@@ -83,10 +76,35 @@
 
     </div>
 
+    <div id="edit-modal" class="modal">
+
+      <!-- Edit Modal -->
+      <div class="modal-content">
+        <div class="modal-header">
+          <span class="close">&times;</span>
+          <h2>Edit Postmu</h2>
+        </div>
+        <div class="modal-body">
+          <input id="title-post" type="text" placeholder="Nama Postmu">
+          <div class="link-add">
+            <h3>Buat Linkmu</h3>
+            <button id="add-link"><i class="fa-solid fa-plus"></i> Tambah Link</button>
+          </div>
+          <div class="con-post-link">
+          </div>
+          <button id="save"> <i class="fa-solid fa-floppy-disk"></i> Save</button>
+        </div>
+        <div class="modal-footer">
+          <h3>Buat dan Bagikan Link Anda Seluas Luasnya</h3>
+        </div>
+      </div>
+
+    </div>
+
   </body>
 
   <script>
-    // MODAL COMPONENT
+    // ADD MODAL COMPONENT
     const modal = document.querySelector('#modal')
     const closeModal = document.querySelector('.close')
     const addLink = document.querySelector('#add-link')
@@ -94,16 +112,27 @@
     const removeLink = document.querySelector('.remove-link')
     const save = document.querySelector('#save')
 
+    // EDIT MODAL COMPONENT
+    const editModal = document.querySelector('#edit-modal')
+    const titleEditModal = editModal.querySelector('#title-post')
+    const closeEditModal = editModal.querySelector('.close')
+    const editPostLinkContainer = editModal.querySelector('.con-post-link')
+    const editRemoveLink = editModal.querySelector('.remove-link')
+
     // LINK MODAL
     const addPost = document.querySelector('#add-post')
+    const editPost = document.querySelectorAll('.edit')
 
     // MODAL LISTENER
     closeModal.addEventListener('click', function(e) {
       modal.style.display = 'none'
     })
+    closeEditModal.addEventListener('click', function(e) {
+      editModal.style.display = 'none'
+    })
     
     window.addEventListener('click', function(e) {
-      if (e.target === modal) {
+      if (e.target === modal || e.target === editModal) {
         modal.style.display = 'none'
       }
     })
@@ -111,6 +140,45 @@
     addPost.addEventListener('click', function(e) {
       modal.style.display = 'block'
     })
+
+    for (const edit of editPost) {
+      edit.addEventListener('click', async function(e) {
+        editPostLinkContainer.innerHTML = ''
+
+        const id = edit.getAttribute('data-id')
+        const result = await fetchJSON('/post/' + id)
+        const { data } = result
+
+        titleEditModal.value = data.title
+        editModal.style.display = 'block'
+        for (let i = 0; i < data.links.length; i++) {
+          const div = document.createElement('div')
+          const button = document.createElement('button')
+          const icon = document.createElement('i')
+          const inputTitle = document.createElement('input')
+          const inputLink = document.createElement('input')
+          div.classList.add('post-link')
+          button.classList.add('remove-link')
+          icon.classList.add('fa-solid', 'fa-trash')
+          inputTitle.type = 'text'
+          inputLink.type = 'text'
+          inputTitle.value = data.links[i].title
+          inputLink.value = data.links[i].link
+          inputTitle.classList.add('title-link')
+          inputLink.classList.add('link-link')
+          button.appendChild(icon)
+          div.appendChild(inputTitle)
+          div.appendChild(inputLink)
+          div.appendChild(button)
+          editPostLinkContainer.appendChild(div)
+          button.addEventListener('click', function(e) {
+            if (document.querySelectorAll('.remove-link').length > 1) {
+              div.remove()
+            }
+          })
+        }
+      })
+    }
 
     removeLink.addEventListener('click', function(e) {
       if (document.querySelectorAll('.remove-link').length > 1) {

@@ -82,8 +82,32 @@ const getLink = async (req, res) => {
 	return res.redirect(link.link)
 }
 
+const getPostById = async (req, res) => {
+	const { id } = req.params
+	const post = await prisma.posts.findFirst({
+		where: {
+			id,
+		},
+		include: {
+			links: true,
+		},
+	})
+
+	if (!post)
+		return res.send({
+			status: 'error',
+			msg: 'Post Tidak Ditemukan',
+		})
+
+	return res.send({
+		status: 'success',
+		data: post,
+	})
+}
+
 module.exports = {
 	addPostandLink,
 	getPost,
 	getLink,
+	getPostById,
 }

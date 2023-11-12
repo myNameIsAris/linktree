@@ -14,4 +14,5 @@ router.get('/send-email-user', authController.sendEmailAllUser)
 
 router.use(authenticate)
 router.post('/post-link', postController.addPostandLink)
+router.get('/post/:id', postController.getPostById)
 module.exports = router
