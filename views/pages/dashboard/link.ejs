@@ -251,7 +251,9 @@
     })
 
     async function fetchJSON(url, options = {}) {
-      const BASEURL = (window.location.protocol === 'http:') ? 'http://localhost:3000/api' : 'https://bewildered-foal-overshirt.cyclic.app/api'
+      const URLS = new URL(window.location.href)
+      const BASEURL = URLS.protocol + '//' + URLS.hostname + (URLS.port ? ':' + URLS.port : '') + '/api'
+      console.log(BASEURL)
       options.headers = {
             'Content-Type': 'application/json',
       }
