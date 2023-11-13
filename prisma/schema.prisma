@@ -54,7 +54,7 @@ model Links {
 
 model Posts_activity {
   id String @id @default(auto()) @map("_id") @db.ObjectId
-  created_at DateTime @default(now())
+  created_at DateTime
   
   post Posts @relation(fields: [id_post], references: [id])
   id_post String @db.ObjectId
@@ -62,7 +62,7 @@ model Posts_activity {
 
 model Links_activity {
   id String @id @default(auto()) @map("_id") @db.ObjectId
-  created_at DateTime @default(now())
+  created_at DateTime
   
   link Links @relation(fields: [id_link], references: [id])
   id_link String @db.ObjectId

@@ -7,7 +7,7 @@
     <script src="https://kit.fontawesome.com/524dd30d0c.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.js"></script>
   </head>
-  <title>Dashboard | Artree</title>
+  <title>Admin | Artree</title>
   <body>
 
     <div class="sidenav">
@@ -27,10 +27,10 @@
       <div class="welcome">
         <h1>Selamat Datang <%= user.fullname %></h1>
         <span>Buat Postmu Sekarang</span>
-      </div>
+      </div>np
 
       <div class="container-stats">
-        <h1>Jumlah Pengunjung Linkmu</h1>
+        <h1>Jumlah Pengunjung Artree</h1>
         <canvas id="stats-visit"></canvas>
       </div>
 
@@ -69,7 +69,7 @@
   <script>
     (async () => {
       // const colors = ['darkgrey', 'white', 'red']
-      const result = await fetchJSON('/post-activity/user')
+      const result = await fetchJSON('/post-activity/all')
       
       let labels = []
       const colors = []
@@ -77,48 +77,25 @@
 
       // Create Label
       for (const d of result.data) {
-        for (const act of Object.keys(d.activity)) {
-          labels.push(act)
-        }
-      }
-
-      labels = [...new Set([...labels])]
-
-      for (let i = 0; i < labels.length; i++) {
-        colors.push(generateRandomHexColor())
-      }
-      let x = 0
-      for (const d of result.data) {
-        const tempData = []
-        for (const label of labels) {
-          if (d.activity[label]) tempData.push(d.activity[label])
-          else tempData.push(0)
-        }
-        const obj = {
-          label : d.title,
-          fill: true,
-          data : tempData,
-          // backgroundColor: 'rgba(255, 255, 255, 0.1)',
-          borderColor: colors[x],
-          tension: .2
-        }
-        datasets.push(obj)
-        x++
+        const time = new Date(d.created_at)
+        const convTime = time.getDate() + '-' + (time.getMonth() + 1) + '-' + time.getFullYear()
+        labels.push(convTime)
+        datasets.push(d._count)
       }
 
       const data = {
         labels: labels,
-        datasets: datasets
-        // datasets: [
-        //   {
-        //     label: 'Pengunjung',
-        //     data: datasets,
-        //     fill: true,
-        //     backgroundColor: 'rgba(255, 255, 255, 0.1)',
-        //     borderColor: '#fffeff',
-        //     tension: .2
-        //   },
-        // ]
+        // datasets: datasets
+        datasets: [
+          {
+            label: 'Pengunjung',
+            data: datasets,
+            fill: true,
+            // backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            borderColor: generateRandomHexColor(),
+            tension: .2
+          },
+        ]
       }
       const plugin = {
         id: 'customCanvasBackgroundColor',

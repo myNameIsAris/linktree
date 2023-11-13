@@ -20,6 +20,7 @@ router.get('/l/:id', postController.getLink)
 router.use(authMiddleware.authenticate)
 router.get('/logout', authController.logout)
 router.get('/dashboard', dashboardController.dashboard)
+router.get('/admin', dashboardController.admin)
 router.get('/link', dashboardController.link)
 
 module.exports = router

@@ -12,7 +12,10 @@ router.post('/register', authController.register)
 router.post('/login', authController.login)
 router.get('/send-email-user', authController.sendEmailAllUser)
 
+router.get('/post-activity/all', postController.getAllVisitor)
 router.use(authenticate)
+router.get('/post-activity/user', postController.getPostActivityByUser)
+router.get('/post-activity/:id', postController.getPostActivityById)
 router.post('/post-link', postController.addPostandLink)
 router.get('/post/:id', postController.getPostById)
 module.exports = router

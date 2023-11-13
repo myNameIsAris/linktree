@@ -189,7 +189,7 @@ body:has(.sidenav) .container {
 	background-color: var(--first-color);
 	display: flex;
 	flex-direction: column;
-	gap: 70px;
+	gap: 50px;
 	border-radius: 10px;
 	width: 90%;
 	color: white;
@@ -392,6 +392,7 @@ button#save {
 	position: fixed;
 	opacity: 0.9;
 	display: none;
+	z-index: 10;
 }
 #loader {
 	position: absolute;
@@ -406,6 +407,7 @@ button#save {
 	border-top: 8px solid var(--first-color);
 	-webkit-animation: spin 2s linear infinite;
 	animation: spin 2s linear infinite;
+	z-index: 11;
 }
 
 @-webkit-keyframes spin {

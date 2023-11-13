@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style/components.css">
     <link rel="stylesheet" href="style/dashboard.css">
     <script src="https://kit.fontawesome.com/524dd30d0c.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.js"></script>
@@ -12,6 +13,9 @@
 
     <div class="sidenav">
       <h1>Artree</h1>
+      <% if (user.role === 1) { %>
+        <a href="/admin">Admin</a>
+        <% } %>
       <a href="/dashboard">Dashboard</a>
       <a href="/link">Link</a>
       <a href="/profile">Profile</a>
@@ -21,7 +25,7 @@
     <div class="container">
 
       <div class="welcome">
-        <h1>Selamat Datang Aris</h1>
+        <h1>Selamat Datang <%= user.fullname %></h1>
         <span>Buat Postmu Sekarang</span>
       </div>
 
@@ -30,6 +34,10 @@
           <h1>Buat Link Mu Sekarang</h1>
           <button id="add-post"><i class="fa-solid fa-plus"></i>  Tambah Post</button>
         </div>
+
+        <div class="alert-container">
+        </div>
+
 
         <div class="con-link">
           <% for( const post of posts ) { %>
@@ -55,6 +63,7 @@
           <h2>Buat Postmu</h2>
         </div>
         <div class="modal-body">
+          <div class="add-modal-alert-container"></div>
           <input id="title-post" type="text" placeholder="Nama Postmu">
           <div class="link-add">
             <h3>Buat Linkmu</h3>
@@ -85,6 +94,7 @@
           <h2>Edit Postmu</h2>
         </div>
         <div class="modal-body">
+          </div>
           <input id="title-post" type="text" placeholder="Nama Postmu">
           <div class="link-add">
             <h3>Buat Linkmu</h3>
@@ -122,6 +132,8 @@
     const closeEditModal = editModal.querySelector('.close')
     const editPostLinkContainer = editModal.querySelector('.con-post-link')
     const editRemoveLink = editModal.querySelector('.remove-link')
+    const editSaveLink = editModal.querySelector('#save')
+    const editAddLink = editModal.querySelector('#add-link')
 
     // LINK MODAL
     const addPost = document.querySelector('#add-post')
@@ -129,6 +141,10 @@
 
     // LOADER
     const loading = document.querySelector('#loader-bg')
+
+    // ALERT
+    const alertContainer = document.querySelector('.alert-container')
+    const addAlertModalContainer = document.querySelector('.add-modal-alert-container')
 
     // MODAL LISTENER
     closeModal.addEventListener('click', function(e) {
@@ -148,6 +164,7 @@
       modal.style.display = 'block'
     })
 
+    // EDIT LISTENER
     for (const edit of editPost) {
       edit.addEventListener('click', async function(e) {
         toggleLoader(true)
@@ -164,6 +181,7 @@
           const icon = document.createElement('i')
           const inputTitle = document.createElement('input')
           const inputLink = document.createElement('input')
+          div.setAttribute('data-id', data.links[i].id)
           div.classList.add('post-link')
           button.classList.add('remove-link')
           icon.classList.add('fa-solid', 'fa-trash')
@@ -171,6 +189,8 @@
           inputLink.type = 'text'
           inputTitle.value = data.links[i].title
           inputLink.value = data.links[i].link
+          inputTitle.setAttribute('data-old', data.links[i].title)
+          inputLink.setAttribute('data-old', data.links[i].link)
           inputTitle.classList.add('title-link')
           inputLink.classList.add('link-link')
           button.appendChild(icon)
@@ -188,7 +208,34 @@
         editModal.style.display = 'block'
       })
     }
+    // SAVE EDIT
+    editSaveLink.addEventListener('click', function(e) {
+      const title = editModal.querySelector('#title-post').value
+      const links = []
+      const allTitle = editModal.querySelectorAll('.title-link')
+      const allLinks = editModal.querySelectorAll('.link-link')
+      for (let i = 0; i < allTitle.length; i++) {
+        if (allTitle[i].parentElement.getAttribute('data-id')) {
+          if (allTitle[i].value !== allTitle[i].getAttribute('data-old') || allLinks[i].value !== allLinks[i].getAttribute('data-old')) {
+            const data = {
+              id : allTitle[i].parentElement.getAttribute('data-id') || null,
+              title : allTitle[i].value,
+              link : allLinks[i].value,
+            }
+            links.push(data)
+          }
+        } else {
+          const data = {
+            title : allTitle[i].value,
+            link : allLinks[i].value,
+          }
+          links.push(data)
+        }
+      }
+      console.log(links)
+    })
 
+    // REMOVE FIRST LINK
     removeLink.addEventListener('click', function(e) {
       if (document.querySelectorAll('.remove-link').length > 1) {
         const parent = removeLink.parentElement
@@ -223,9 +270,36 @@
         }
       })
     })
-
+    editAddLink.addEventListener('click', function(e) {
+      const div = document.createElement('div')
+      const button = document.createElement('button')
+      const i = document.createElement('i')
+      const inputTitle = document.createElement('input')
+      const inputLink = document.createElement('input')
+      div.classList.add('post-link')
+      button.classList.add('remove-link')
+      i.classList.add('fa-solid', 'fa-trash')
+      inputTitle.type = 'text'
+      inputLink.type = 'text'
+      inputTitle.placeholder = 'Title'
+      inputLink.placeholder = 'Link'
+      inputTitle.classList.add('title-link')
+      inputLink.classList.add('link-link')
+      button.appendChild(i)
+      div.appendChild(inputTitle)
+      div.appendChild(inputLink)
+      div.appendChild(button)
+      editPostLinkContainer.appendChild(div)
+      button.addEventListener('click', function(e) {
+        if (document.querySelectorAll('.remove-link').length > 1) {
+          div.remove()
+        }
+      })
+    })
+    
     // SAVE LINK
     save.addEventListener('click', async function(e) {
+      toggleLoader(true)
       const title = document.querySelector('#title-post').value
       const links = []
       const allTitle = document.querySelectorAll('.title-link')
@@ -242,12 +316,22 @@
         title,
         links
       }
-      await fetchJSON('/post-link', {
+      const data = await fetchJSON('/post-link', {
         method : 'POST',
         body : JSON.stringify(payload)
       })
+      console.log(data)
 
-      window.location.href = '/link'
+      if (data.status === 'error') {
+        toggleLoader(false)
+        createAlert('error', data.msg, addAlertModalContainer)
+      } else if (data.status === 'success') {
+        window.location.href = '/link'
+        // createAlert('success', 'Post Berhasil Dibuat', alertContainer)
+      }
+
+
+
     })
 
     async function fetchJSON(url, options = {}) {
@@ -273,6 +357,35 @@
     function toggleLoader(status) {
       if (status) loading.style.display = 'block'
       else loading.style.display = 'none'
+    }
+
+    function createAlert(type, msg, container) {
+      container.innerHTML = ''
+      const div = document.createElement('div')
+      div.classList.add('alert')
+      div.setAttribute('data-style', type)
+      const span = document.createElement('span')
+      span.classList.add('closebtn')
+      span.innerHTML = '&times;'
+      span.setAttribute('onclick', `this.parentElement.style.display='none';`)
+      div.appendChild(span)
+      div.innerHTML += msg
+      container.appendChild(div)
+    }
+    
+    function addPostx(data) {
+      const link = document.createElement('div')
+      link.classList.add('link')
+
+      const title = document.createElement('span')
+      title.innerText = data.title
+      link.appendChild(title)
+
+      const linkCustom = document.createElement('div')
+      linkCustom.classList.add('link-custom')
+
+      const editButton = document.createElement('a')
+      editButton.href = `/t/${data.user}` 
     }
   </script>
 </html>

@@ -1,10 +1,20 @@
-const prisma = require('../utils/database')
 const generator = require('randomstring')
+const prisma = require('../utils/database')
+const { validate } = require('../validator/validation')
+const postValidate = require('../validator/posts-validator')
 
 const addPostandLink = async (req, res) => {
-	const { title, links } = req.body
+	const [data, error] = validate(postValidate.addPost, req.body)
 
-	const data = {
+	if (error) {
+		return res.send({
+			status: 'error',
+			msg: 'Terjadi Kesalahan Dalam Input Post, Silahkan Cek Kembali',
+		})
+	}
+	const { title, links } = data
+
+	const data_ = {
 		id_user: req.user.id,
 		title,
 		url: generator.generate({
@@ -12,7 +22,7 @@ const addPostandLink = async (req, res) => {
 			charset: 'alphabetic',
 		}),
 	}
-	const post = await prisma.posts.create({ data })
+	const post = await prisma.posts.create({ data: data_ })
 
 	for (const link of links) link.id_post = post.id
 
@@ -20,7 +30,9 @@ const addPostandLink = async (req, res) => {
 		data: links,
 	})
 
-	return res.redirect(301, '/link')
+	return res.redirect({
+		status: 'success',
+	})
 }
 
 const getPost = async (req, res) => {
@@ -49,9 +61,13 @@ const getPost = async (req, res) => {
 	if (!userPost) {
 		return res.redirect('/')
 	}
+	const time = new Date()
+	const created_at = new Date(
+		time.getFullYear() + '-' + (time.getMonth() + 1) + '-' + time.getDate()
+	)
 
 	await prisma.posts_activity.create({
-		data: { id_post: userPost.id },
+		data: { id_post: userPost.id, created_at },
 	})
 
 	console.log(userPost)
@@ -74,9 +90,15 @@ const getLink = async (req, res) => {
 	})
 
 	// if (!link) return res.redirect('/')
-
+	const time = new Date()
+	const created_at = new Date(
+		time.getFullYear() + '-' + (time.getMonth() + 1) + '-' + time.getDate()
+	)
 	await prisma.links_activity.create({
-		data: { id_link: link.id },
+		data: {
+			id_link: link.id,
+			created_at,
+		},
 	})
 
 	return res.redirect(link.link)
@@ -105,9 +127,80 @@ const getPostById = async (req, res) => {
 	})
 }
 
+const getPostActivityById = async (req, res) => {
+	const { id } = req.params
+	const result = await prisma.posts_activity.groupBy({
+		by: ['created_at'],
+		where: {
+			id_post: id,
+		},
+		_count: true,
+	})
+	return res.send({
+		status: 'success',
+		data: result,
+	})
+}
+
+const getPostActivityByUser = async (req, res) => {
+	const id = req.user.id
+
+	const posts = await prisma.posts.findMany({
+		where: {
+			id_user: id,
+		},
+		include: {
+			activity: true,
+		},
+	})
+	const allActivity = []
+	let i = 0
+	for (const d of posts) {
+		// Count
+		allActivity[i] = {}
+		allActivity[i].title = d.title
+		allActivity[i].activity = {}
+
+		for (const act of d.activity) {
+			const time = new Date(act.created_at)
+			const convTime =
+				time.getDate() + '-' + (time.getMonth() + 1) + '-' + time.getFullYear()
+			allActivity[i].activity[convTime] =
+				(allActivity[i].activity[convTime]
+					? allActivity[i].activity[convTime]
+					: 0) + 1
+		}
+		i++
+	}
+
+	return res.send({
+		status: 'success',
+		data: allActivity,
+	})
+}
+
+const getAllVisitor = async (req, res) => {
+	const data = await prisma.posts_activity.groupBy({
+		by: ['created_at'],
+		orderBy: {
+			created_at: 'asc',
+		},
+		_count: true,
+	})
+
+	console.log(data)
+	return res.send({
+		status: 'success',
+		data,
+	})
+}
+
 module.exports = {
 	addPostandLink,
 	getPost,
 	getLink,
 	getPostById,
+	getPostActivityById,
+	getPostActivityByUser,
+	getAllVisitor,
 }

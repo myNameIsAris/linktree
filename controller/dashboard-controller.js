@@ -44,6 +44,29 @@ const dashboard = async (req, res) => {
 	})
 }
 
+const admin = async (req, res) => {
+	const user = req.user
+
+	if (user.role !== 1) {
+		return res.redirect('/dashboard')
+	}
+
+	const viewer = await prisma.posts_activity.count()
+	const linkCount = await prisma.links.count()
+	const postCount = await prisma.posts.count()
+
+	const count = {
+		viewer,
+		linkCount,
+		postCount,
+	}
+
+	return res.render('../views/pages/dashboard/admin', {
+		user,
+		count,
+	})
+}
+
 const link = async (req, res) => {
 	const user = req.user
 
@@ -57,8 +80,6 @@ const link = async (req, res) => {
 		},
 	})
 
-	console.log(posts)
-
 	return res.render('../views/pages/dashboard/link', {
 		user,
 		posts,
@@ -68,4 +89,5 @@ const link = async (req, res) => {
 module.exports = {
 	dashboard,
 	link,
+	admin,
 }
