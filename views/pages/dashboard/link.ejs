@@ -101,6 +101,10 @@
 
     </div>
 
+    <div id="loader-bg">
+      <div id="loader"></div>
+    </div>
+
   </body>
 
   <script>
@@ -123,6 +127,9 @@
     const addPost = document.querySelector('#add-post')
     const editPost = document.querySelectorAll('.edit')
 
+    // LOADER
+    const loading = document.querySelector('#loader-bg')
+
     // MODAL LISTENER
     closeModal.addEventListener('click', function(e) {
       modal.style.display = 'none'
@@ -143,6 +150,7 @@
 
     for (const edit of editPost) {
       edit.addEventListener('click', async function(e) {
+        toggleLoader(true)
         editPostLinkContainer.innerHTML = ''
 
         const id = edit.getAttribute('data-id')
@@ -150,7 +158,6 @@
         const { data } = result
 
         titleEditModal.value = data.title
-        editModal.style.display = 'block'
         for (let i = 0; i < data.links.length; i++) {
           const div = document.createElement('div')
           const button = document.createElement('button')
@@ -177,6 +184,8 @@
             }
           })
         }
+        toggleLoader(false)
+        editModal.style.display = 'block'
       })
     }
 
@@ -257,6 +266,11 @@
       } catch (error) {
           console.log(error)
       }
+    }
+
+    function toggleLoader(status) {
+      if (status) loading.style.display = 'block'
+      else loading.style.display = 'none'
     }
   </script>
 </html>
