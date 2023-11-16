@@ -35,7 +35,7 @@ model Posts {
   links Links[]
   activity Posts_activity[]
 
-  user Users @relation(fields: [id_user], references: [id])
+  user Users @relation(fields: [id_user], references: [id], onDelete: Cascade)
   id_user String @db.ObjectId
 }
 
@@ -48,7 +48,7 @@ model Links {
   is_deleted Boolean @default(false)
   activity Links_activity[]
 
-  post Posts @relation(fields: [id_post], references: [id])
+  post Posts @relation(fields: [id_post], references: [id], onDelete: Cascade)
   id_post String @db.ObjectId
 }
 
@@ -56,7 +56,7 @@ model Posts_activity {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   created_at DateTime
   
-  post Posts @relation(fields: [id_post], references: [id])
+  post Posts @relation(fields: [id_post], references: [id], onDelete: Cascade)
   id_post String @db.ObjectId
 }
 
@@ -64,6 +64,6 @@ model Links_activity {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   created_at DateTime
   
-  link Links @relation(fields: [id_link], references: [id])
+  link Links @relation(fields: [id_link], references: [id], onDelete: Cascade)
   id_link String @db.ObjectId
 }

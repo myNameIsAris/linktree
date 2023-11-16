@@ -28,12 +28,17 @@
         <h1>Selamat Datang <%= user.fullname %></h1>
         <span>Buat Postmu Sekarang</span>
       </div>
-
+      
       <div class="container-link">
         <div class="link-title">
           <h1>Buat Link Mu Sekarang</h1>
           <button id="add-post"><i class="fa-solid fa-plus"></i>  Tambah Post</button>
         </div>
+        <% if (success) { %>
+          <%- include('../../components/alert.ejs', {type : 'success', msg : success}) %>
+          <% } else if (error) { %>
+          <%- include('../../components/alert.ejs', {type : 'error', msg : error}) %>
+        <% } %>
 
         <div class="alert-container">
         </div>
@@ -94,7 +99,6 @@
           <h2>Edit Postmu</h2>
         </div>
         <div class="modal-body">
-          </div>
           <input id="title-post" type="text" placeholder="Nama Postmu">
           <div class="link-add">
             <h3>Buat Linkmu</h3>
@@ -146,6 +150,9 @@
     const alertContainer = document.querySelector('.alert-container')
     const addAlertModalContainer = document.querySelector('.add-modal-alert-container')
 
+    // DELETE POST
+    const deletePost = document.querySelectorAll('.remove')
+
     // MODAL LISTENER
     closeModal.addEventListener('click', function(e) {
       modal.style.display = 'none'
@@ -175,6 +182,7 @@
         const { data } = result
 
         titleEditModal.value = data.title
+        titleEditModal.setAttribute('data-id', id)
         for (let i = 0; i < data.links.length; i++) {
           const div = document.createElement('div')
           const button = document.createElement('button')
@@ -198,8 +206,12 @@
           div.appendChild(inputLink)
           div.appendChild(button)
           editPostLinkContainer.appendChild(div)
-          button.addEventListener('click', function(e) {
+          button.addEventListener('click', async function(e) {
             if (document.querySelectorAll('.remove-link').length > 1) {
+              const result = await fetchJSON('/link/' + data.links[i].id, {
+                method : 'DELETE'
+              })
+              
               div.remove()
             }
           })
@@ -209,8 +221,9 @@
       })
     }
     // SAVE EDIT
-    editSaveLink.addEventListener('click', function(e) {
+    editSaveLink.addEventListener('click', async function(e) {
       const title = editModal.querySelector('#title-post').value
+      const id = editModal.querySelector('#title-post').getAttribute('data-id')
       const links = []
       const allTitle = editModal.querySelectorAll('.title-link')
       const allLinks = editModal.querySelectorAll('.link-link')
@@ -233,6 +246,16 @@
         }
       }
       console.log(links)
+
+      const result = await fetchJSON('/post-link/' + id, {
+        method : 'PUT',
+        body : JSON.stringify({
+          title,
+          links
+        })
+      })
+
+      console.log(result)
     })
 
     // REMOVE FIRST LINK
@@ -245,56 +268,10 @@
 
     // ADD LINK
     addLink.addEventListener('click', function(e) {
-      const div = document.createElement('div')
-      const button = document.createElement('button')
-      const i = document.createElement('i')
-      const inputTitle = document.createElement('input')
-      const inputLink = document.createElement('input')
-      div.classList.add('post-link')
-      button.classList.add('remove-link')
-      i.classList.add('fa-solid', 'fa-trash')
-      inputTitle.type = 'text'
-      inputLink.type = 'text'
-      inputTitle.placeholder = 'Title'
-      inputLink.placeholder = 'Link'
-      inputTitle.classList.add('title-link')
-      inputLink.classList.add('link-link')
-      button.appendChild(i)
-      div.appendChild(inputTitle)
-      div.appendChild(inputLink)
-      div.appendChild(button)
-      postLinkContainer.appendChild(div)
-      button.addEventListener('click', function(e) {
-        if (document.querySelectorAll('.remove-link').length > 1) {
-          div.remove()
-        }
-      })
+      createAddLink(postLinkContainer)
     })
     editAddLink.addEventListener('click', function(e) {
-      const div = document.createElement('div')
-      const button = document.createElement('button')
-      const i = document.createElement('i')
-      const inputTitle = document.createElement('input')
-      const inputLink = document.createElement('input')
-      div.classList.add('post-link')
-      button.classList.add('remove-link')
-      i.classList.add('fa-solid', 'fa-trash')
-      inputTitle.type = 'text'
-      inputLink.type = 'text'
-      inputTitle.placeholder = 'Title'
-      inputLink.placeholder = 'Link'
-      inputTitle.classList.add('title-link')
-      inputLink.classList.add('link-link')
-      button.appendChild(i)
-      div.appendChild(inputTitle)
-      div.appendChild(inputLink)
-      div.appendChild(button)
-      editPostLinkContainer.appendChild(div)
-      button.addEventListener('click', function(e) {
-        if (document.querySelectorAll('.remove-link').length > 1) {
-          div.remove()
-        }
-      })
+      createAddLink(editPostLinkContainer)
     })
     
     // SAVE LINK
@@ -334,6 +311,17 @@
 
     })
 
+    for (const button of deletePost) {
+      button.addEventListener('click', async function() {
+        toggleLoader(true)
+        const id = button.getAttribute('data-id')
+        const result = await fetchJSON('/post/' + id, {
+          method : 'DELETE'
+        })
+        button.parentElement.parentElement.remove()
+        toggleLoader(false)
+      })
+    }
     async function fetchJSON(url, options = {}) {
       const URLS = new URL(window.location.href)
       const BASEURL = URLS.protocol + '//' + URLS.hostname + (URLS.port ? ':' + URLS.port : '') + '/api'
@@ -345,9 +333,11 @@
           const response = await fetch(BASEURL + url, options)
           if (!response.ok) {
               const data = await response.json()
+              toggleLoader(false)
               return alert(data.msg)
           }
           const data = await response.json()
+          if (data.redirected) window.location.href = data.redirected
           return data
       } catch (error) {
           console.log(error)
@@ -373,19 +363,31 @@
       container.appendChild(div)
     }
     
-    function addPostx(data) {
-      const link = document.createElement('div')
-      link.classList.add('link')
-
-      const title = document.createElement('span')
-      title.innerText = data.title
-      link.appendChild(title)
-
-      const linkCustom = document.createElement('div')
-      linkCustom.classList.add('link-custom')
-
-      const editButton = document.createElement('a')
-      editButton.href = `/t/${data.user}` 
+    function createAddLink(container) {
+      const div = document.createElement('div')
+      const button = document.createElement('button')
+      const i = document.createElement('i')
+      const inputTitle = document.createElement('input')
+      const inputLink = document.createElement('input')
+      div.classList.add('post-link')
+      button.classList.add('remove-link')
+      i.classList.add('fa-solid', 'fa-trash')
+      inputTitle.type = 'text'
+      inputLink.type = 'text'
+      inputTitle.placeholder = 'Title'
+      inputLink.placeholder = 'Link'
+      inputTitle.classList.add('title-link')
+      inputLink.classList.add('link-link')
+      button.appendChild(i)
+      div.appendChild(inputTitle)
+      div.appendChild(inputLink)
+      div.appendChild(button)
+      container.appendChild(div)
+      button.addEventListener('click', function(e) {
+        if (document.querySelectorAll('.remove-link').length > 1) {
+          div.remove()
+        }
+      })
     }
   </script>
 </html>

@@ -83,6 +83,8 @@ const link = async (req, res) => {
 	return res.render('../views/pages/dashboard/link', {
 		user,
 		posts,
+		success: req.flash('success')[0],
+		error: req.flash('error')[0],
 	})
 }
 
