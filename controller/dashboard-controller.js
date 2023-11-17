@@ -1,9 +1,9 @@
 const Users = require('../model/users-model')
-const Posts = require('../model/posts-model')
 const prisma = require('../utils/database')
 
 const dashboard = async (req, res) => {
 	const user = req.user
+	const id = req.user.id
 
 	const viewer = await prisma.posts_activity.count({
 		where: {
@@ -24,6 +24,7 @@ const dashboard = async (req, res) => {
 			},
 		},
 	})
+
 	const postCount = await prisma.posts.count({
 		where: {
 			user: {
@@ -31,6 +32,35 @@ const dashboard = async (req, res) => {
 			},
 		},
 	})
+
+	const posts = await prisma.posts.findMany({
+		where: {
+			id_user: id,
+		},
+		include: {
+			activity: true,
+		},
+	})
+
+	const allActivity = []
+	let i = 0
+	for (const d of posts) {
+		// Count
+		allActivity[i] = {}
+		allActivity[i].title = d.title
+		allActivity[i].activity = {}
+
+		for (const act of d.activity) {
+			const time = new Date(act.created_at)
+			const convTime =
+				time.getDate() + '-' + (time.getMonth() + 1) + '-' + time.getFullYear()
+			allActivity[i].activity[convTime] =
+				(allActivity[i].activity[convTime]
+					? allActivity[i].activity[convTime]
+					: 0) + 1
+		}
+		i++
+	}
 
 	const count = {
 		viewer,
@@ -41,6 +71,7 @@ const dashboard = async (req, res) => {
 	return res.render('../views/pages/dashboard/dashboard', {
 		user,
 		count,
+		activity: JSON.stringify(allActivity),
 	})
 }
 

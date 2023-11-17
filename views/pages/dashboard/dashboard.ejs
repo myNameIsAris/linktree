@@ -10,16 +10,7 @@
   <title>Dashboard | Artree</title>
   <body>
 
-    <div class="sidenav">
-      <h1>Artree</h1>
-      <% if (user.role === 1) { %>
-        <a href="/admin">Admin</a>
-      <% } %>
-      <a href="/dashboard">Dashboard</a>
-      <a href="/link">Link</a>
-      <a href="/profile">Profile</a>
-      <a href="/logout">Logout</a>
-    </div>
+    <%- include('../../components/sidenav.ejs', {role : user.role}) %>
     
     <div class="container">
 
@@ -67,15 +58,16 @@
 
   <script>
     (async () => {
-      // const colors = ['darkgrey', 'white', 'red']
-      const result = await fetchJSON('/post-activity/user')
+      const act = '<%= activity %>'
+      const result= JSON.parse(act.replace(/&#34;/g, '"').replace(/&quot;/g, '"'))
+      // console.log(dataArray)
       
       let labels = []
       const colors = []
       const datasets = []
 
       // Create Label
-      for (const d of result.data) {
+      for (const d of result) {
         for (const act of Object.keys(d.activity)) {
           labels.push(act)
         }
@@ -87,7 +79,7 @@
         colors.push(generateRandomHexColor())
       }
       let x = 0
-      for (const d of result.data) {
+      for (const d of result) {
         const tempData = []
         for (const label of labels) {
           if (d.activity[label]) tempData.push(d.activity[label])

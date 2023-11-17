@@ -107,8 +107,11 @@ const addPostandLink = async (req, res) => {
 		data: links,
 	})
 
-	return res.redirect({
+	req.flash('success', 'Post Berhasil Ditambah')
+
+	return res.send({
 		status: 'success',
+		redirected: '/link',
 	})
 }
 
