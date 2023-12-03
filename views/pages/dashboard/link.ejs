@@ -165,7 +165,7 @@
 
     addPost.addEventListener('click', async function(e) {
       const status = addPost.getAttribute('data-status')
-      if (Number(status) < 3) modal.style.display = 'block'
+      if (Number(status) < 3) return modal.style.display = 'block'
 
       const link = document.querySelectorAll('.link')
       if (link.length === 3) {
