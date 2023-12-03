@@ -60,7 +60,6 @@
     (async () => {
       const act = '<%= activity %>'
       const result= JSON.parse(act.replace(/&#34;/g, '"').replace(/&quot;/g, '"'))
-      // console.log(dataArray)
       
       let labels = []
       const colors = []
@@ -74,6 +73,11 @@
       }
 
       labels = [...new Set([...labels])]
+      labels.sort((a, b) => {
+        const dateA = new Date(a)
+        const dateB = new Date(b)
+        return dateA - dateB
+      })
 
       for (let i = 0; i < labels.length; i++) {
         colors.push(generateRandomHexColor())
@@ -96,6 +100,13 @@
         datasets.push(obj)
         x++
       }
+
+      labels = labels.map(lbl => {
+        const time = lbl.split('-')
+        for (let i = 0; i < time.length; i++) if (time[i].length < 2) time[i] = '0' + time[i]
+        const [year, month, day] = time
+        return `${day}-${month}-${year}`
+      })
 
       const data = {
         labels: labels,

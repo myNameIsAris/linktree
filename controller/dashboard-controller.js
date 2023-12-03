@@ -53,7 +53,7 @@ const dashboard = async (req, res) => {
 		for (const act of d.activity) {
 			const time = new Date(act.created_at)
 			const convTime =
-				time.getDate() + '-' + (time.getMonth() + 1) + '-' + time.getFullYear()
+				time.getFullYear() + '-' + (time.getMonth() + 1) + '-' + time.getDate()
 			allActivity[i].activity[convTime] =
 				(allActivity[i].activity[convTime]
 					? allActivity[i].activity[convTime]
