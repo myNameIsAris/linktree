@@ -58,19 +58,20 @@
 
   <script>
     (async () => {
-      // const colors = ['darkgrey', 'white', 'red']
-      const result = await fetchJSON('/post-activity/all')
+      const act = '<%= allActivity %>'
+      const result= JSON.parse(act.replace(/&#34;/g, '"').replace(/&quot;/g, '"'))
       
       let labels = []
       const colors = []
       const datasets = []
 
       // Create Label
-      for (const d of result.data) {
-        const time = new Date(d.created_at)
-        const convTime = time.getDate() + '-' + (time.getMonth() + 1) + '-' + time.getFullYear()
-        labels.push(convTime)
-        datasets.push(d._count)
+      for (const d of Object.entries(result)) {
+        const time = d[0].split('-')
+        for (let i = 0; i < time.length; i++) if (time[i].length < 2) time[i] = '0' + time[i]
+        const [year, month, day] = time
+        labels.push(`${day}-${month}-${year}`)
+        datasets.push(d[1])
       }
 
       const data = {

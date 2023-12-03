@@ -86,6 +86,17 @@ const admin = async (req, res) => {
 	const linkCount = await prisma.links.count()
 	const postCount = await prisma.posts.count()
 
+	const allPostActivity = await prisma.posts_activity.findMany()
+	const allActivity = {}
+
+	for (const act of allPostActivity) {
+		const time = new Date(act.created_at)
+		const convTime =
+			time.getFullYear() + '-' + (time.getMonth() + 1) + '-' + time.getDate()
+		allActivity[convTime] =
+			(allActivity[convTime] ? allActivity[convTime] : 0) + 1
+	}
+
 	const count = {
 		viewer,
 		linkCount,
@@ -95,6 +106,7 @@ const admin = async (req, res) => {
 	return res.render('../views/pages/dashboard/admin', {
 		user,
 		count,
+		allActivity: JSON.stringify(allActivity),
 	})
 }
 
