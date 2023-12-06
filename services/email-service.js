@@ -1,13 +1,14 @@
 const nodemailer = require('nodemailer')
 
 const User = require('../model/users-model')
+const { smtp } = require('../utils/variabel')
 
 const transporter = nodemailer.createTransport({
-	port: 465,
-	host: 'smtp.gmail.com',
+	port: smtp.port,
+	host: smtp.host,
 	auth: {
-		user: 'chalkfoust@gmail.com',
-		pass: 'ycbw jpuk eshs vygq',
+		user: smtp.email,
+		pass: smtp.password,
 	},
 	secure: true,
 })
@@ -28,6 +29,12 @@ const sendEmailAllUser = async () => {
 	}
 }
 
+const sendEmail = async (options) => {
+	options.from = smtp.email
+	await transporter.sendMail(options)
+}
+
 module.exports = {
 	sendEmailAllUser,
+	sendEmail,
 }

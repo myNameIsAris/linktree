@@ -11,8 +11,10 @@ const { authenticate } = require('../middleware/auth-middleware')
 router.post('/register', authController.register)
 router.post('/login', authController.login)
 router.get('/send-email-user', authController.sendEmailAllUser)
-
 router.get('/post-activity/all', postController.getAllVisitor)
+router.post('/reset-password', authController.forgetPassword)
+router.post('/forget-password/', authController.changePassword)
+
 router.use(authenticate)
 router.get('/post-activity/user', postController.getPostActivityByUser)
 router.get('/post-activity/:id', postController.getPostActivityById)

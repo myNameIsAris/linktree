@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs')
 const { v4: uuid } = require('uuid')
+const crypto = require('crypto')
 
 // Import DB
 const prisma = require('../utils/database')
@@ -124,9 +125,103 @@ const sendEmailAllUser = async (req, res) => {
 	})
 }
 
+const forgetPassword = async (req, res) => {
+	// Validate Request
+	const [data, error] = validate(authValidate.forget, req.body)
+
+	if (error) {
+		req.flash('error', 'Terdapat Kesalahan Pada Input Anda')
+		console.log(error)
+		return res.redirect('/reset-password')
+	}
+
+	// Find User By Email
+	const user = await prisma.users.findFirst({
+		where: {
+			email: data.email,
+		},
+	})
+	if (!user) {
+		req.flash('error', 'Email Anda Belum Terdaftar')
+		console.log(error)
+		return res.redirect('/reset-password')
+	}
+
+	// Find Email in Forget Token
+	const forget = await prisma.forgetPassword.findFirst({
+		where: {
+			email: data.email,
+		},
+	})
+	if (forget) {
+		req.flash('error', 'Email Reset Sudah Ada, Silahkan Cek Email Anda')
+		console.log(error)
+		return res.redirect('/reset-password')
+	}
+
+	// Generate Token For Reset Password
+	const token = crypto.randomBytes(20).toString('hex')
+	await prisma.forgetPassword.create({
+		data: {
+			email: data.email,
+			token,
+		},
+	})
+
+	// Send Email
+	const url = `${req.protocol}://${req.get('host')}/change-password/${token}`
+	const options = {
+		to: data.email,
+		subject: 'RESET PASSWORD OF ARTREE',
+		html:
+			'<h1> Silahkan Klik Link Dibawah Untuk Reset Password </h1> <br> ' + url,
+	}
+	await emailService.sendEmail(options)
+
+	req.flash('success', 'Silahkan Cek Email Anda')
+	return res.redirect('/login')
+}
+
+const changePassword = async (req, res) => {
+	const { token, password } = req.body
+
+	// Find Forgot Password
+	const forgotPassword = await prisma.forgetPassword.findFirst({
+		where: {
+			token,
+		},
+	})
+	if (!forgotPassword) {
+		req.flash('error', 'Terdapat Kesalahan Pada Input Anda')
+		return res.redirect('/reset-password')
+	}
+
+	// Change Password
+	await prisma.users.update({
+		where: {
+			email: forgotPassword.email,
+		},
+		data: {
+			password: bcrypt.hashSync(password, 3),
+		},
+	})
+
+	// Delete Token
+	await prisma.forgetPassword.delete({
+		where: {
+			token,
+		},
+	})
+
+	req.flash('success', 'Password Berhasil Diubah, Silahkan Login Kembali')
+	return res.redirect('/login')
+}
+
 module.exports = {
 	register,
 	login,
 	logout,
 	sendEmailAllUser,
+	forgetPassword,
+	changePassword,
 }

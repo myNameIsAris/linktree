@@ -18,19 +18,19 @@ const apiRouter = require('./routers/api')
 
 app.set('view engine', 'ejs')
 app.use(express.static(__dirname + '/public'))
-app.use(
-	expressWinston.logger({
-		transports: [new winston.transports.Console()],
-		format: winston.format.combine(
-			winston.format.colorize(),
-			winston.format.simple(),
-			winston.format.json()
-		),
-		// meta: true, // menyertakan metadata seperti timestamp
-		msg: 'HTTP {{req.method}} {{req.url}}',
-		colorize: true,
-	})
-)
+// app.use(
+// 	expressWinston.logger({
+// 		transports: [new winston.transports.Console()],
+// 		format: winston.format.combine(
+// 			winston.format.colorize(),
+// 			winston.format.simple(),
+// 			winston.format.json()
+// 		),
+// 		// meta: true, // menyertakan metadata seperti timestamp
+// 		msg: 'HTTP {{req.method}} {{req.url}}',
+// 		colorize: true,
+// 	})
+// )
 
 app.use(cors())
 app.use(express.json({ extended: true }))

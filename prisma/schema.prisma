@@ -12,17 +12,24 @@ datasource db {
 
 model Users {
   id String @id @default(auto()) @map("_id") @db.ObjectId
-  username String
+  username String @unique
   fullname String
   password String
   role Int
-  email String
+  email String @unique
   token String?
   created_at DateTime @default(now())
   update_at DateTime @updatedAt
   is_deleted Boolean @default(false)
   
   posts Posts[]
+}
+
+model ForgetPassword {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  email String @unique
+  token String @unique
+  created_at DateTime @default(now())
 }
 
 model Posts {

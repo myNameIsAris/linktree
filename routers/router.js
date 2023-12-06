@@ -16,6 +16,8 @@ router.get('/login', homeController.login)
 router.get('/register', homeController.register)
 router.get('/t/:username/:url', postController.getPost)
 router.get('/l/:id', postController.getLink)
+router.get('/reset-password', homeController.forgetPassword)
+router.get('/change-password/:token', homeController.changePassword)
 
 router.use(authMiddleware.authenticate)
 router.get('/logout', authController.logout)

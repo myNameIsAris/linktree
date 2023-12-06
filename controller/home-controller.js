@@ -21,8 +21,25 @@ const register = (req, res) => {
 	})
 }
 
+const forgetPassword = async (req, res) => {
+	return res.render('../views/pages/home/forget-password', {
+		success: req.flash('success')[0],
+		error: req.flash('error')[0],
+	})
+}
+
+const changePassword = async (req, res) => {
+	const { token } = req.params
+	// console.log(token)
+	return res.render('../views/pages/home/change-password', {
+		token,
+	})
+}
+
 module.exports = {
 	home,
 	login,
 	register,
+	forgetPassword,
+	changePassword,
 }

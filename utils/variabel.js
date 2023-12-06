@@ -5,5 +5,7 @@ module.exports = {
 	smtp: {
 		email: process.env.SMTP_EMAIL,
 		password: process.env.SMTP_PASSWORD,
+		port: process.env.SMTP_PORT,
+		host: process.env.SMTP_HOST,
 	},
 }

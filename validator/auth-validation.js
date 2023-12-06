@@ -5,6 +5,11 @@ const login = Joi.object({
 	password: Joi.string().required(),
 })
 
+const forget = Joi.object({
+	email: Joi.string().max(100).email().required(),
+})
+
 module.exports = {
 	login,
+	forget,
 }
