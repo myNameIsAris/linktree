@@ -8,4 +8,5 @@ module.exports = {
 		port: process.env.SMTP_PORT,
 		host: process.env.SMTP_HOST,
 	},
+	baseUrl: process.env.BASE_URL,
 }

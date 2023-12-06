@@ -12,6 +12,7 @@ const { validate } = require('../validator/validation')
 
 // Import Service
 const emailService = require('../services/email-service')
+const { baseUrl } = require('../utils/variabel')
 
 const register = async (req, res) => {
 	// Validate Request
@@ -169,7 +170,7 @@ const forgetPassword = async (req, res) => {
 	})
 
 	// Send Email
-	const url = `${req.protocol}://${req.get('host')}/change-password/${token}`
+	const url = `${baseUrl}/change-password/${token}`
 	const options = {
 		to: data.email,
 		subject: 'RESET PASSWORD OF ARTREE',
