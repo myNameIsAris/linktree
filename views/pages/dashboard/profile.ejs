@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style/components.css">
+    <link rel="stylesheet" href="style/dashboard.css">
+    <script src="https://kit.fontawesome.com/524dd30d0c.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.js"></script>
+  </head>
+  <title>Profile | Artree</title>
+  <body>
+
+    <%- include('../../components/sidenav.ejs', {role : user.role}) %>
+    
+    <div class="container">
+
+      <div class="welcome">
+        <h1>Selamat Datang <%= user.fullname %></h1>
+        <span>Buat Postmu Sekarang</span>
+      </div>
+      
+      <div class="container-profile">
+        <div class="link-title">
+          <h1>Edit Profile</h1>
+          <% if (success) { %>
+            <%- include('../../components/alert.ejs', {type : 'success', msg : success}) %>
+          <% } else if (error) { %>
+            <%- include('../../components/alert.ejs', {type : 'error', msg : error}) %>
+          <% } %>
+          
+          <form action="/api/profile/save" method="post" class="form-profile">
+            <label for="">Username</label>
+            <input name="username" type="text" placeholder="Username" value="<%= user.username %>">
+            <label for="">Email</label>
+            <input name="email" type="email" placeholder="Email" value="<%= user.email %>">
+            <label for="">Password</label>
+            <input name="password" type="password" placeholder="Password" value="">
+            <button type="submit">Save</button>
+          </form>
+
+      </div>
+
+      <div class="footer">
+        <span style="font-size: larger; font-weight: bolder;">Copyright By Aris</span>
+        <span>Sejak Tahun 2023</span>
+      </div>
+    </div>
+
+  </body>
+
+  <script>
+    
+    function showToast(message, time = 3000) {
+        TOAST.textContent = ''
+        TOAST.textContent = message
+        TOAST.classList.add('show')
+        setTimeout(function() {
+            TOAST.classList.remove('show')
+        }, time);
+    }
+  
+  </script>
+</html>

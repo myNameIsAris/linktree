@@ -4,6 +4,8 @@ const prisma = require('../utils/database')
 const dashboard = async (req, res) => {
 	const user = req.user
 	const id = req.user.id
+	const role = ['Admin', 'Premium', 'User']
+	user.roleName = role[Number(user.role) - 1]
 
 	const viewer = await prisma.posts_activity.count({
 		where: {
@@ -68,9 +70,10 @@ const dashboard = async (req, res) => {
 		postCount,
 	}
 
-	return res.render('../views/pages/dashboard/dashboard', {
+	return res.render('../views/pages/dashboard/dashboard-new', {
 		user,
 		count,
+		page: 'dashboard',
 		activity: JSON.stringify(allActivity),
 	})
 }
@@ -110,8 +113,20 @@ const admin = async (req, res) => {
 	})
 }
 
+const profile = async (req, res) => {
+	const user = req.user
+
+	return res.render('../views/pages/dashboard/profile', {
+		user,
+		success: req.flash('success')[0],
+		error: req.flash('error')[0],
+	})
+}
+
 const link = async (req, res) => {
 	const user = req.user
+	const role = ['Admin', 'Premium', 'User']
+	user.roleName = role[Number(user.role) - 1]
 
 	const posts = await prisma.posts.findMany({
 		where: {
@@ -123,9 +138,10 @@ const link = async (req, res) => {
 		},
 	})
 
-	return res.render('../views/pages/dashboard/link', {
+	return res.render('../views/pages/dashboard/link-new', {
 		user,
 		posts,
+		page: 'link',
 		success: req.flash('success')[0],
 		error: req.flash('error')[0],
 	})
@@ -135,4 +151,5 @@ module.exports = {
 	dashboard,
 	link,
 	admin,
+	profile,
 }

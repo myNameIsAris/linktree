@@ -24,5 +24,6 @@ router.get('/logout', authController.logout)
 router.get('/dashboard', dashboardController.dashboard)
 router.get('/admin', dashboardController.admin)
 router.get('/link', dashboardController.link)
+router.get('/profile', dashboardController.profile)
 
 module.exports = router

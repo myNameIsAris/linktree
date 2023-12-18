@@ -290,7 +290,7 @@ const deleteLink = async (req, res) => {
 	if (user.id !== link.post.id_user) {
 		return res.send({
 			status: 'error',
-			redirected: '/link',
+			// redirected: '/link',
 		})
 	}
 
@@ -335,8 +335,11 @@ const deletePost = async (req, res) => {
 		},
 	})
 
+	req.flash('success', 'Post Berhasil Dihapus')
+
 	return res.send({
 		status: 'success',
+		redirected: '/link',
 	})
 }
 

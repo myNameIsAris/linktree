@@ -1,0 +1,60 @@
+<div class="leftside-menu">
+    
+    <!-- LOGO -->
+    <a href="index.html" class="logo text-center logo-light mt-2">
+        <h1 style="color: white;">Linktree</h1>
+    </a>
+
+    <div class="h-100" id="leftside-menu-container" data-simplebar="">
+
+        <!--- Sidemenu -->
+        <ul class="side-nav">
+            <% if (role === 1) { %>
+                <li class="side-nav-title side-nav-item">Admin</li>
+                <li class="side-nav-item">
+                    <a href="apps-calendar.html" class="side-nav-link">
+                        <i class="uil-home-alt"></i>
+                        <span> Admin </span>
+                    </a>
+                </li>
+            <% } %>
+
+
+            <li class="side-nav-title side-nav-item">Setting</li>
+
+            <li class="side-nav-item <%= (page === 'dashboard') ? 'menuitem-active' : '' %>">
+                <a href="/dashboard" class="side-nav-link">
+                    <i class="uil-calender"></i>
+                    <span> Dashboard </span>
+                </a>
+            </li>
+
+            <li class="side-nav-item <%= (page === 'link') ? 'menuitem-active' : '' %>"">
+                <a href="/link" class="side-nav-link">
+                    <i class="dripicons-link"></i>
+                    <span> Link </span>
+                </a>
+            </li>
+
+            <li class="side-nav-item">
+                <a href="/profile" class="side-nav-link">
+                    <i class="dripicons-user"></i>
+                    <span> Profile </span>
+                </a>
+            </li>
+
+            <li class="side-nav-item">
+                <a href="/logout" class="side-nav-link">
+                    <i class="dripicons-exit"></i>
+                    <span> Logout </span>
+                </a>
+            </li>
+        </ul>
+        <!-- End Sidebar -->
+
+        <div class="clearfix"></div>
+
+    </div>
+    <!-- Sidebar -left -->
+
+</div>

@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <title> Link | Artree </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description">
+        <meta content="Coderthemes" name="author">
+        <!-- App favicon -->
+        <link rel="shortcut icon" href="images/favicon.ico">
+
+        <!-- third party css -->
+        <link href="css/vendor/jquery-jvectormap-1.2.2.css" rel="stylesheet" type="text/css">
+        <!-- third party css end -->
+
+        <!-- App css -->
+        <link href="css/icons.min.css" rel="stylesheet" type="text/css">
+        <link href="css/app.min.css" rel="stylesheet" type="text/css" id="light-style">
+        <link href="css/app-dark.min.css" rel="stylesheet" type="text/css" id="dark-style">
+
+    </head>
+
+    <body class="loading" data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":true, "showRightSidebarOnStart": false}'>
+        <!-- Begin page -->
+        <div class="wrapper">
+            <!-- ========== Left Sidebar Start ========== -->
+            <%- include('../../components/sidenav-new.ejs', {role : user.role, page}) %>
+            <!-- Left Sidebar End -->
+
+            <!-- ============================================================== -->
+            <!-- Start Page Content here -->
+            <!-- ============================================================== -->
+
+            <div class="content-page">
+                <div class="content">
+                    <!-- Topbar Start [NAVBAR] --> 
+                    <div class="navbar-custom">
+                        <ul class="list-unstyled topbar-menu float-end mb-0">
+                            <li class="notification-list">
+                                <a class="nav-link end-bar-toggle" href="javascript: void(0);">
+                                    <i class="dripicons-gear noti-icon"></i>
+                                </a>
+                            </li>
+                            <li class="dropdown notification-list">
+                                <a class="nav-link dropdown-toggle nav-user arrow-none me-0" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                                    <span class="account-user-avatar"> 
+                                        <img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=<%= user.username %>" alt="user-image" class="rounded-circle">
+                                    </span>
+                                    <span>
+                                        <span class="account-user-name"><%= user.fullname %></span>
+                                        <span class="account-position"><%= user.roleName %></span>
+                                    </span>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated topbar-dropdown-menu profile-dropdown">
+                                    <!-- item-->
+                                    <div class=" dropdown-header noti-title">
+                                        <h6 class="text-overflow m-0">Welcome !</h6>
+                                    </div>
+
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <i class="mdi mdi-account-circle me-1"></i>
+                                        <span>My Account</span>
+                                    </a>
+
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <i class="mdi mdi-account-edit me-1"></i>
+                                        <span>Settings</span>
+                                    </a>
+
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <i class="mdi mdi-lifebuoy me-1"></i>
+                                        <span>Support</span>
+                                    </a>
+
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <i class="mdi mdi-lock-outline me-1"></i>
+                                        <span>Lock Screen</span>
+                                    </a>
+
+                                    <!-- item-->
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <i class="mdi mdi-logout me-1"></i>
+                                        <span>Logout</span>
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                        <button class="button-menu-mobile open-left">
+                            <i class="mdi mdi-menu"></i>
+                        </button>
+                    </div>
+                    <!-- end Topbar [NAVBAR] -->
+                    
+                    <!-- Start Content-->
+                    <div class="container-fluid">
+
+                        <!-- start page title -->
+                        <div class="row mt-2">
+                            <div class="col-12">
+                                <div class="page-title-box">
+                                    <h4 class="page-title">Link</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end page title -->
+
+                        <div class="row">
+                            <div class="card h-100">
+                                <div class="d-flex flex-col justify-content-between p-2">
+                                    <h1 class="header-title mt-2 fs-3">Buat Linkmu Sekarang</h1>
+                                    <button class="btn btn-success" id="add-post-button">+ Add Post</button>
+                                    <!-- <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#add-post-modal">+ Add Post</button> -->
+                                </div>
+                                <div class="d-flex flex-row flex-column gap-3 p-4">
+                                    <%if (success) { %>
+                                        <div class="alert alert-success alert-dismissible text-bg-success border-0 fade show" role="alert">
+                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                                            <strong>Success - </strong> <%= success %>
+                                        </div>
+                                    <% } else if (error) { %>
+                                        <div class="alert alert-danger alert-dismissible text-bg-danger border-0 fade show" role="alert">
+                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                                            <strong>Error - </strong> <%= error %>
+                                        </div>
+                                    <% } %>
+                                    <% for( const post of posts ) { %>
+                                        <%- include('../../components/link-comp-new.ejs', {post})  %>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div> <!-- end col -->
+
+
+                    </div>
+                    <!-- container -->
+
+                </div>
+                <!-- content -->
+
+                <!-- Footer Start -->
+                <footer class="footer">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <script>document.write(new Date().getFullYear())</script> © Hyper - Coderthemes.com
+                            </div>
+                            <div class="col-md-6">
+                                <div class="text-md-end footer-links d-none d-md-block">
+                                    <a href="javascript: void(0);">About</a>
+                                    <a href="javascript: void(0);">Support</a>
+                                    <a href="javascript: void(0);">Contact Us</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+                <!-- end Footer -->
+
+            </div>
+
+            <!-- ============================================================== -->
+            <!-- End Page content -->
+            <!-- ============================================================== -->
+
+
+        </div>
+        <!-- END wrapper -->
+
+        <!-- Right Sidebar -->
+        <div class="end-bar">
+
+            <div class="rightbar-title">
+                <a href="javascript:void(0);" class="end-bar-toggle float-end">
+                    <i class="dripicons-cross noti-icon"></i>
+                </a>
+                <h5 class="m-0">Settings</h5>
+            </div>
+
+            <div class="rightbar-content h-100" data-simplebar="">
+
+                <div class="p-3">
+                    <div class="alert alert-warning" role="alert">
+                        <strong>Customize </strong> the overall color scheme, sidebar menu, etc.
+                    </div>
+
+                    <!-- Settings -->
+                    <h5 class="mt-3">Color Scheme</h5>
+                    <hr class="mt-1">
+
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="color-scheme-mode" value="light" id="light-mode-check" checked="">
+                        <label class="form-check-label" for="light-mode-check">Light Mode</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="color-scheme-mode" value="dark" id="dark-mode-check">
+                        <label class="form-check-label" for="dark-mode-check">Dark Mode</label>
+                    </div>
+       
+
+                    <!-- Width -->
+                    <h5 class="mt-4">Width</h5>
+                    <hr class="mt-1">
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="width" value="fluid" id="fluid-check" checked="">
+                        <label class="form-check-label" for="fluid-check">Fluid</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="width" value="boxed" id="boxed-check">
+                        <label class="form-check-label" for="boxed-check">Boxed</label>
+                    </div>
+        
+
+                    <!-- Left Sidebar-->
+                    <h5 class="mt-4">Left Sidebar</h5>
+                    <hr class="mt-1">
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="theme" value="default" id="default-check">
+                        <label class="form-check-label" for="default-check">Default</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="theme" value="light" id="light-check" checked="">
+                        <label class="form-check-label" for="light-check">Light</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" name="theme" value="dark" id="dark-check">
+                        <label class="form-check-label" for="dark-check">Dark</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="compact" value="fixed" id="fixed-check" checked="">
+                        <label class="form-check-label" for="fixed-check">Fixed</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="compact" value="condensed" id="condensed-check">
+                        <label class="form-check-label" for="condensed-check">Condensed</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-1">
+                        <input class="form-check-input" type="checkbox" name="compact" value="scrollable" id="scrollable-check">
+                        <label class="form-check-label" for="scrollable-check">Scrollable</label>
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button class="btn btn-primary" id="resetBtn">Reset to Default</button>
+                    </div>
+                </div> <!-- end padding-->
+
+            </div>
+        </div>
+
+        <!-- Add Modal -->
+        <div class="modal fade" id="add-post-modal" tabindex="-1" role="dialog" aria-labelledby="addPostModalLabel" aria-hidden="false">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="addPostModalLabel">Add Post</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="edit-title-post" placeholder="Nama Postmu" name="title-post" />
+                            <label for="title-post">Nama Post</label>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="fw-bold fs-4">Buat Linkmu</span>
+                            <button class="btn btn-success" id="add-link-add">+ Tambah Link</button>
+                        </div>
+                        <div id="container-link-add" class="d-flex flex-column w-100 gap-2">
+                            <div class="d-flex w-100 gap-2 item-link">
+                            </div>
+                        </div>
+                        <div class="d-flex flex-row justify-content-end mt-3">
+                            <div class="btn btn-success w-auto" id="add-save">Save</div>
+                        </div>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+        <!-- Add Modal -->
+
+        <!-- Edit Modal -->
+        <div class="modal fade" id="edit-post-modal" tabindex="-1" role="dialog" aria-labelledby="editPostModalLabel" aria-hidden="false">
+            <div class="modal-dialog modal-lg w-75">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="editPostModalLabel">Add Post</h4>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="title-post" placeholder="Nama Postmu" name="title-post" />
+                            <label for="title-post">Nama Post</label>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="fw-bold fs-4">Buat Linkmu</span>
+                            <button class="btn btn-success" id="add-link-edit">+ Tambah Link</button>
+                        </div>
+                        <div id="edit-container-link-add" class="d-flex flex-column w-100 gap-2">
+                            <div class="d-flex w-100 gap-2 item-link">
+                            </div>
+                        </div>
+                        <div class="d-flex flex-row justify-content-end mt-3">
+                            <div class="btn btn-success w-auto" id="edit-save">Save</div>
+                        </div>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+        <!-- Edit Modal -->
+
+
+        <div class="rightbar-overlay"></div>
+        <!-- /End-bar -->
+
+        <!-- bundle -->
+        <script src="js/vendor.min.js"></script>
+        <script src="js/app.min.js"></script>
+
+        <!-- third party js -->
+        <!-- <script src="assets/js/vendor/Chart.bundle.min.js"></script> -->
+        <script src="js/vendor/apexcharts.min.js"></script>
+        <script src="js/vendor/jquery-jvectormap-1.2.2.min.js"></script>
+        <script src="js/vendor/jquery-jvectormap-world-mill-en.js"></script>
+        <!-- third party js ends -->
+
+        <!-- demo app -->
+        <script>
+            // CONTAINER
+            const containerLinkFromAddModal = document.querySelector('#container-link-add')
+            const containerLinkFromEDitModal = document.querySelector('#edit-container-link-add')
+
+            // TRIGGER
+            const addPostButton = document.querySelector('#add-post-button')
+            const addPostLinkButton = document.querySelector('#add-link-add')
+            const saveAddModal = document.querySelector('#add-save')
+            const editPostLinkButton = document.querySelector('#edit-link-add')
+            
+            // ADD MODAL
+            const addPostModal = document.querySelector('#add-post-modal')
+            const addPostButtonModal = document.querySelector('#add-post-modal')
+
+            // EDIT MODAL
+            const editSaveModal = document.querySelector('#edit-save')
+            const titleEditModal = document.querySelector('#edit-post-modal').querySelector('[name="title-post"]')
+            const addLinkEditModal = document.querySelector('#add-link-edit')
+
+            const deletePost = document.querySelectorAll('.remove')
+            const editPost = document.querySelectorAll('.edit')
+
+            // LISTENER
+            // For Show Add Post Modal 
+            addPostButton.addEventListener('click', function() {
+                const containerAddLinkAdd = document.querySelector('#container-link-add')
+                createLinkPost(containerAddLinkAdd)
+                
+                // Count Add Link
+                if (containerAddLinkAdd.childElementCount > 1) {
+                    containerAddLinkAdd.innerHTML = ''
+                    createLinkPost(containerAddLinkAdd)
+                }
+
+                // Show Modal
+                $('#add-post-modal').modal('show')
+            })
+
+            // For Add Link Post
+            addPostLinkButton.addEventListener('click', function() {
+                createLinkPost(containerLinkFromAddModal)
+            })
+
+            // For Add Link Post Edit
+            addLinkEditModal.addEventListener('click', function() {
+                createLinkPost(containerLinkFromEDitModal)
+            })
+
+            // For Add Post
+            saveAddModal.addEventListener('click', async function(e) {
+                // Get Data
+                const titlePost = addPostModal.querySelector('[name="title-post"]').value
+                const allTitleLink = addPostModal.querySelectorAll('[name="title-link"]')
+                const allLinkAddress = addPostModal.querySelectorAll('[name="link-address"]')
+
+                // Validate
+                if (titlePost === '') {
+                                                                            
+                    $.NotificationApp.send('Error','Terjadi Kesalahan, Perhatikan Input Anda','top-right', 'error','error')
+                    return
+
+                }
+
+                // Get Title and Link Address
+                const links = []
+                for (let i = 0; i < allTitleLink.length; i++) {
+                    links.push({
+                        title : allTitleLink[i].value,
+                        link : allLinkAddress[i].value,
+                    })
+                }
+
+                const payload = {
+                    title : titlePost,
+                    links
+                }
+
+                const data = await fetchJSON('/post-link', {
+                    method : 'POST',
+                    body : JSON.stringify(payload)
+                })
+            })
+
+            // For Edit Link
+            for (const edit of editPost) {
+                edit.addEventListener('click', async function(e) {
+                    containerLinkFromEDitModal.innerHTML = ''
+
+                    const id = edit.getAttribute('data-id')
+                    const result = await fetchJSON('/post/' + id)
+                    const { data } = result
+                    
+                    titleEditModal.value = data.title
+                    titleEditModal.setAttribute('data-id', id)
+                    for (const link of data.links) {
+                        createLinkPost(containerLinkFromEDitModal, {
+                            title : link.title,
+                            link : link.link,
+                            id : link.id
+                        })
+                    }
+                    $('#edit-post-modal').modal('show')
+                })
+            }
+
+            // For Remove Link
+            for (const button of deletePost) {
+                button.addEventListener('click', async function() {
+                    const id = button.getAttribute('data-id')
+                    const result = await fetchJSON('/post/' + id, {
+                        method : 'DELETE'
+                    })
+                    button.parentElement.parentElement.remove()
+                })
+            }
+
+            // For Save Edit Modal
+            editSaveModal.addEventListener('click', async function() {
+                const links = []
+                const title = titleEditModal.value
+                const id = titleEditModal.getAttribute('data-id')
+
+                const allTitle = containerLinkFromEDitModal.querySelectorAll('.title-link')
+                const allLinks = containerLinkFromEDitModal.querySelectorAll('.link-link')
+
+                for (let i = 0; i < allTitle.length; i++) {
+                    if (allTitle[i].parentElement.parentElement.getAttribute('data-id')) {
+                        if (allTitle[i].value !== allTitle[i].getAttribute('data-old') || allLinks[i].value !== allLinks[i].getAttribute('data-old')) {
+                            console.log(allTitle[i].parentElement.parentElement.getAttribute('data-id'))
+                            const data = {
+                                title : allTitle[i].value,
+                                link : allLinks[i].value,
+                            }
+                            if (allTitle[i].parentElement.parentElement.getAttribute('data-id') !== undefined) data.id = allTitle[i].parentElement.parentElement.getAttribute('data-id')
+                        links.push(data)
+                        }
+                    } else {
+                        const data = {
+                            title : allTitle[i].value,
+                            link : allLinks[i].value,
+                        }
+                        links.push(data)
+                    }
+                }
+                console.log(links)
+                const payload = {
+                    title, links
+                }
+                const result = await fetchJSON('/post-link/' + id, {
+                    method : 'PUT',
+                    body : JSON.stringify(payload)
+                })
+            })
+
+            // UTILITIES
+            function createLinkPost(container, value) {
+                // Parent
+                const div = createElement('div', 'd-flex w-100 gap-2 item-link')
+                div.setAttribute('data-id', value?.id || '')
+
+                // Title Link
+                const titleDiv = createElement('div', 'form-floating w-50 justify-content-between')
+                const inputTitle = createElement('input', 'form-control rounded-1 title-link')
+                inputTitle.type = 'text'
+                inputTitle.setAttribute('id', 'title-link')
+                inputTitle.setAttribute('placeholder', '')
+                inputTitle.setAttribute('name', 'title-link')
+                inputTitle.setAttribute('data-old', value?.title || '')
+                inputTitle.value = value?.title || ''
+                const labelTitle = createElement('label')
+                labelTitle.textContent = 'Link Title'
+                labelTitle.setAttribute('for', 'title-link')
+                titleDiv.appendChild(inputTitle)
+                titleDiv.appendChild(labelTitle)
+                div.appendChild(titleDiv)
+                
+                // Link
+                const linkDiv = createElement('div', 'form-floating w-50 justify-content-between')
+                const linkTitle = createElement('input', 'form-control rounded-1 link-link')
+                linkTitle.type = 'text'
+                linkTitle.setAttribute('id', 'link-address')
+                linkTitle.setAttribute('placeholder', '')
+                linkTitle.setAttribute('name', 'link-address')
+                linkTitle.setAttribute('data-old', value?.link || '')
+                linkTitle.value = value?.link || ''
+                const labelLink = createElement('label')
+                labelLink.textContent = 'Link Address'
+                labelLink.setAttribute('for', 'link-address')
+                linkDiv.appendChild(linkTitle)
+                linkDiv.appendChild(labelLink)
+                div.appendChild(linkDiv)
+
+                // Remove
+                const button = createElement('button', 'btn btn-danger my-auto')
+                const icon = createElement('i', 'dripicons-trash')
+                button.appendChild(icon)
+                div.appendChild(button)
+
+                // Listener
+                button.addEventListener('click', async function() {
+                    // console.log(value.id)
+                    if (value?.id) {
+                        const result = await fetchJSON('/link/' + value.id, {
+                            method : 'DELETE'
+                        })
+                    }
+                    if (container.childElementCount > 1) div.remove()
+                })
+                
+                // Append to Container
+                container.appendChild(div)
+            }
+
+            function createElement(type, className) {
+                const component = document.createElement(type)
+                if (className) {
+                    const data = className.split(' ')
+                    component.classList.add(...data)
+                }
+                return component
+            }
+
+            // UTILITY
+            async function fetchJSON(url, options = {}) {
+                const URLS = new URL(window.location.href)
+                const BASEURL = URLS.protocol + '//' + URLS.hostname + (URLS.port ? ':' + URLS.port : '')
+                options.headers = {
+                    'Content-Type': 'application/json',
+                }
+                try {
+                    const response = await fetch(BASEURL + '/api' + url, options)
+                    if (!response.ok) {
+                        const data = await response.json()
+                        toggleLoader(false)
+                        return alert(data.msg)
+                    }
+                    const data = await response.json()
+                    if (data.redirected) window.location.href = data.redirected
+                    return data
+                } catch (error) {
+                    console.log(error)
+                }
+                }
+        </script>
+        <!-- end demo js-->
+    </body>
+
+</html>

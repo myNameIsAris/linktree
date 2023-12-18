@@ -1,0 +1,8 @@
+<div class="bg-dragula d-flex justify-content-between w-100 rounded-3 p-2">
+    <span class="my-auto fs-4"><%= post.title  %></span>
+    <div class="d-flex gap-1">
+        <a href="/t/<%= user.username %>/<%= post.url %>" rel="noopener nofollow" target="_blank" class="btn btn-success rounded-3"><i class="dripicons-export"></i></a>
+        <button data-id="<%= post.id %>" class="btn btn-warning rounded-3 edit"><i class="dripicons-document-edit"></i></button>
+        <button data-id="<%= post.id %>" class="btn btn-danger rounded-3 remove"><i class="dripicons-trash"></i></button>
+    </div>
+</div>

@@ -252,6 +252,43 @@ body:has(.sidenav) .container {
 .open {
 	background-color: var(--fift-color);
 }
+
+/* CONTAINER PROFILE */
+.container-profile {
+	background-color: var(--first-color);
+	display: flex;
+	flex-direction: column;
+	gap: 50px;
+	border-radius: 10px;
+	width: 90%;
+	color: white;
+	padding: 20px;
+	min-height: 450px;
+}
+
+.form-profile {
+	margin-top: 30px;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.form-profile label {
+	font-size: large;
+}
+
+.form-profile input {
+	background-color: var(--background-color);
+	opacity: 0.7;
+	color: var(--second-color);
+	border: none;
+	font-size: medium;
+	border-radius: 10px;
+	outline: none;
+	padding: 10px;
+	width: 100%;
+	font-size: large;
+}
 /* MODAL */
 
 .modal {
