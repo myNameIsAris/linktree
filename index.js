@@ -51,6 +51,7 @@ app.use(
 		tempFileDir: '/tmp/',
 	})
 )
+app.use('/document/', express.static(path.join(__dirname, '/public/document')))
 
 // Using Router
 app.use('/api/', apiRouter)
