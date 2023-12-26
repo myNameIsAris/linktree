@@ -9,7 +9,7 @@ const postController = require('../controller/post-controller')
 const { authenticate } = require('../middleware/auth-middleware')
 
 router.post('/upload', async (req, res) => {
-	if (req.files === null) {
+	if (!req.files) {
 		return res.status(400).json({ msg: 'No file uploaded' })
 	}
 
