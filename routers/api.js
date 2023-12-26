@@ -13,8 +13,8 @@ router.post('/upload', async (req, res) => {
 		return res.status(400).json({ msg: 'No file uploaded' })
 	}
 
+	console.log(req.files)
 	const files = req.files.files
-	console.log(files)
 
 	const filesName = []
 	const date = +new Date()
