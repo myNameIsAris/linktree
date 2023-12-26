@@ -8,6 +8,7 @@ const cookieParser = require('cookie-parser')
 const winston = require('winston')
 const expressWinston = require('express-winston')
 const { port } = require('./utils/variabel')
+const fileupload = require('express-fileupload')
 
 // DB
 // require('./utils/db')
@@ -44,6 +45,12 @@ app.use(
 	})
 )
 app.use(flash())
+app.use(
+	fileupload({
+		useTempFiles: true,
+		tempFileDir: '/tmp/',
+	})
+)
 
 // Using Router
 app.use('/api/', apiRouter)

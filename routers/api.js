@@ -8,6 +8,25 @@ const postController = require('../controller/post-controller')
 
 const { authenticate } = require('../middleware/auth-middleware')
 
+router.post('/upload', async (req, res) => {
+	if (req.files === null) {
+		return res.status(400).json({ msg: 'No file uploaded' })
+	}
+
+	const files = req.files.files
+
+	const filesName = []
+	const date = +new Date()
+	for (const file of files) {
+		if (!file) break
+		const fileName = date + '-' + file.name
+		filesName.push(fileName)
+		await file.mv(__dirname + '/../public/document/' + fileName)
+	}
+
+	return res.send({ filesName })
+})
+
 router.post('/register', authController.register)
 router.post('/login', authController.login)
 router.get('/send-email-user', authController.sendEmailAllUser)
