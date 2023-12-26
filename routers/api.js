@@ -28,6 +28,11 @@ router.post('/upload', async (req, res) => {
 	return res.send({ filesName })
 })
 
+router.get('/download', async (req, res) => {
+	const fileName = req.query.file
+	return res.download(__dirname + '/../public/document/' + fileName)
+})
+
 router.post('/register', authController.register)
 router.post('/login', authController.login)
 router.get('/send-email-user', authController.sendEmailAllUser)
