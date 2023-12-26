@@ -14,6 +14,7 @@ router.post('/upload', async (req, res) => {
 	}
 
 	const files = req.files.files
+	console.log(files)
 
 	const filesName = []
 	const date = +new Date()
